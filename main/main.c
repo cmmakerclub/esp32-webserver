@@ -120,13 +120,11 @@ http_server_netconn_serve(struct netconn *conn)
              * subtract 1 from the size, since we dont send the \0 in the string
              * NETCONN_NOCOPY: our data is const static, so no need to copy it
        */
-      gpio_pad_select_gpio(LED_BUILTIN);
-      /* Set the GPIO as a push/pull output */
-      gpio_set_direction(LED_BUILTIN, GPIO_MODE_OUTPUT);
-      if(buf[5]=='h'){
+
+      if(buf[5]=='h') {
         gpio_set_level(LED_BUILTIN, 0);
       }
-      if(buf[5]=='l'){
+      else if(buf[5]=='l') {
         gpio_set_level(LED_BUILTIN, 1);
 
       }
@@ -167,7 +165,10 @@ int app_main(void)
     nvs_flash_init();
     system_init();
     initialise_wifi();
-
+    
+    gpio_pad_select_gpio(LED_BUILTIN);
+    /* Set the GPIO as a push/pull output */
+    gpio_set_direction(LED_BUILTIN, GPIO_MODE_OUTPUT);
 
     xTaskCreate(&http_server, "http_server", 2048, NULL, 5, NULL);
     return 0;
